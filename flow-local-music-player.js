@@ -4,28 +4,7 @@ let isPlaying = false;
 
 // Función para manejar la subida de archivos
 function handleFileUpload(event) {
-  const files = event.target.files;
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-    if (file.type.startsWith("audio/")) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        const song = {
-          name: file.name,
-          data: e.target.result,
-        };
-        saveSong(song);
-        updateSongList();
-      };
-      reader.readAsDataURL(file);
-    } else {
-      console.warn(
-        "El archivo",
-        file.name,
-        "no es un archivo de audio válido."
-      );
-    }
-  }
+  handleFiles(event.target.files);
 }
 
 // Función para guardar una canción en el almacenamiento local
@@ -36,10 +15,12 @@ function saveSong(song) {
 }
 
 // Función para actualizar la lista de canciones en la interfaz
-function updateSongList() {
-  const songs = JSON.parse(localStorage.getItem("songs") || "[]");
+function updateSongList(filteredSongs) {
+  const songs =
+    filteredSongs || JSON.parse(localStorage.getItem("songs") || "[]");
   const songList = document.getElementById("songList");
   songList.innerHTML = "";
+
   songs.forEach((song, index) => {
     const li = document.createElement("li");
     const songTitle = document.createElement("span");
@@ -60,6 +41,13 @@ function updateSongList() {
     li.className = "fade-in";
     songList.appendChild(li);
   });
+
+  if (songs.length === 0) {
+    const li = document.createElement("li");
+    li.textContent = "No se encontraron canciones";
+    li.className = "fade-in";
+    songList.appendChild(li);
+  }
 }
 
 // Función para eliminar una canción
@@ -68,6 +56,7 @@ function deleteSong(index) {
   songs.splice(index, 1);
   localStorage.setItem("songs", JSON.stringify(songs));
   updateSongList();
+
   if (index === currentSongIndex) {
     stopPlayback();
   } else if (index < currentSongIndex) {
@@ -174,37 +163,6 @@ function setPlaybackPosition(e) {
   audioPlayer.currentTime = clickPosition * audioPlayer.duration;
 }
 
-// Inicializar la aplicación
-document.addEventListener("DOMContentLoaded", () => {
-  updateSongList();
-  document
-    .getElementById("fileUpload")
-    .addEventListener("change", handleFileUpload);
-  document
-    .getElementById("playPauseBtn")
-    .addEventListener("click", togglePlayPause);
-  document.getElementById("nextBtn").addEventListener("click", playNextSong);
-  document
-    .getElementById("prevBtn")
-    .addEventListener("click", playPreviousSong);
-  document
-    .getElementById("progressContainer")
-    .addEventListener("click", setPlaybackPosition);
-
-  const audioPlayer = document.getElementById("audioPlayer");
-  audioPlayer.addEventListener("ended", playNextSong);
-  audioPlayer.addEventListener("timeupdate", updateProgressBar);
-
-  // Efecto de desvanecimiento para los elementos principales
-  const fadeElements = document.querySelectorAll(".fade-in");
-  fadeElements.forEach((el, index) => {
-    el.style.opacity = "0";
-    setTimeout(() => {
-      el.style.opacity = "1";
-    }, 100 * index);
-  });
-});
-
 // Función para manejar el arrastre y soltar
 function setupDragAndDrop() {
   const dropArea = document.getElementById("drop-area");
@@ -242,7 +200,6 @@ function setupDragAndDrop() {
     handleFiles(files);
   }
 
-  // También permitimos hacer clic para seleccionar archivos
   dropArea.addEventListener("click", () => {
     document.getElementById("fileUpload").click();
   });
@@ -271,43 +228,6 @@ function uploadFile(file) {
   }
 }
 
-// Modificar la función handleFileUpload para usar handleFiles
-function handleFileUpload(event) {
-  handleFiles(event.target.files);
-}
-
-// Modificar la función de inicialización
-document.addEventListener("DOMContentLoaded", () => {
-  updateSongList();
-  document
-    .getElementById("fileUpload")
-    .addEventListener("change", handleFileUpload);
-  setupDragAndDrop();
-  document
-    .getElementById("playPauseBtn")
-    .addEventListener("click", togglePlayPause);
-  document.getElementById("nextBtn").addEventListener("click", playNextSong);
-  document
-    .getElementById("prevBtn")
-    .addEventListener("click", playPreviousSong);
-  document
-    .getElementById("progressContainer")
-    .addEventListener("click", setPlaybackPosition);
-
-  const audioPlayer = document.getElementById("audioPlayer");
-  audioPlayer.addEventListener("ended", playNextSong);
-  audioPlayer.addEventListener("timeupdate", updateProgressBar);
-
-  // Efecto de desvanecimiento para los elementos principales
-  const fadeElements = document.querySelectorAll(".fade-in");
-  fadeElements.forEach((el, index) => {
-    el.style.opacity = "0";
-    setTimeout(() => {
-      el.style.opacity = "1";
-    }, 100 * index);
-  });
-});
-
 // Función para realizar la búsqueda
 function searchSongs() {
   const searchTerm = document.getElementById("searchInput").value.toLowerCase();
@@ -318,42 +238,7 @@ function searchSongs() {
   updateSongList(filteredSongs);
 }
 
-// Modificar la función updateSongList para aceptar un parámetro opcional de canciones filtradas
-function updateSongList(filteredSongs) {
-  const songs =
-    filteredSongs || JSON.parse(localStorage.getItem("songs") || "[]");
-  const songList = document.getElementById("songList");
-  songList.innerHTML = "";
-  songs.forEach((song, index) => {
-    const li = document.createElement("li");
-    const songTitle = document.createElement("span");
-    songTitle.textContent = song.name;
-    songTitle.className = "song-title";
-    li.appendChild(songTitle);
-
-    const deleteBtn = document.createElement("button");
-    deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-    deleteBtn.className = "delete-btn";
-    deleteBtn.onclick = (e) => {
-      e.stopPropagation();
-      deleteSong(index);
-    };
-    li.appendChild(deleteBtn);
-
-    li.onclick = () => playSong(index);
-    li.className = "fade-in";
-    songList.appendChild(li);
-  });
-
-  if (songs.length === 0) {
-    const li = document.createElement("li");
-    li.textContent = "No se encontraron canciones";
-    li.className = "fade-in";
-    songList.appendChild(li);
-  }
-}
-
-// Modificar la función de inicialización
+// Inicializar la aplicación
 document.addEventListener("DOMContentLoaded", () => {
   updateSongList();
   document

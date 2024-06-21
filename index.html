@@ -9,7 +9,7 @@
       rel="stylesheet"
     />
     <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
       rel="stylesheet"
     />
     <style>
@@ -19,6 +19,7 @@
         --background-color: #1a1b41;
         --text-color: #ffffff;
         --hover-color: #6ec6ff;
+        --card-bg-color: rgba(255, 255, 255, 0.05);
       }
 
       * {
@@ -45,12 +46,23 @@
         padding: 20px;
         display: flex;
         flex-direction: column;
+        animation: slideIn 0.5s ease-in-out;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(-100%);
+        }
+        to {
+          transform: translateX(0);
+        }
       }
 
       .logo {
         width: 100px;
         margin-bottom: 20px;
         align-self: center;
+        animation: fadeIn 0.5s ease-in-out;
       }
 
       .nav-item {
@@ -58,27 +70,31 @@
         margin-bottom: 10px;
         border-radius: 5px;
         cursor: pointer;
-        transition: background-color 0.3s ease;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        display: flex;
+        align-items: center;
+      }
+
+      .nav-item i {
+        margin-right: 10px;
       }
 
       .nav-item:hover {
         background-color: var(--primary-color);
+        transform: translateX(10px);
       }
 
       .main-content {
         flex-grow: 1;
         padding: 40px;
         overflow-y: auto;
+        animation: fadeIn 0.5s ease-in;
       }
 
       h1,
       h2 {
         color: var(--secondary-color);
         margin-bottom: 20px;
-      }
-
-      #fileUpload {
-        display: none;
       }
 
       .upload-btn {
@@ -88,38 +104,61 @@
         color: white;
         border-radius: 5px;
         cursor: pointer;
-        transition: background-color 0.3s ease;
+        transition: background-color 0.3s ease, transform 0.3s ease;
         margin-bottom: 20px;
       }
 
       .upload-btn:hover {
         background-color: var(--hover-color);
+        transform: scale(1.05);
       }
 
       #songList {
         list-style-type: none;
         padding: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
       }
 
       #songList li {
         cursor: pointer;
         padding: 15px;
-        margin: 10px 0;
-        background-color: rgba(90, 185, 234, 0.1);
-        border-radius: 5px;
-        transition: all 0.3s ease;
+        background-color: var(--card-bg-color);
+        border-radius: 10px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
         align-items: center;
+        text-align: center;
       }
 
       #songList li:hover {
         background-color: rgba(90, 185, 234, 0.3);
-        transform: translateX(5px);
+        transform: translateY(-5px);
+      }
+
+      .song-cover {
+        width: 150px;
+        height: 150px;
+        background-color: var(--primary-color);
+        border-radius: 5px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 50px;
+        color: var(--text-color);
       }
 
       .song-title {
-        flex-grow: 1;
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .song-artist {
+        font-size: 0.9em;
+        opacity: 0.7;
       }
 
       .delete-btn {
@@ -129,11 +168,13 @@
         cursor: pointer;
         font-size: 1.2em;
         opacity: 0.7;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        margin-top: 10px;
       }
 
       .delete-btn:hover {
         opacity: 1;
+        transform: scale(1.1);
       }
 
       .player {
@@ -147,6 +188,16 @@
         align-items: center;
         justify-content: space-between;
         height: 100px;
+        animation: slideUp 0.5s ease-in-out;
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(100%);
+        }
+        to {
+          transform: translateY(0);
+        }
       }
 
       .player-controls {
@@ -161,11 +212,12 @@
         font-size: 24px;
         margin: 0 10px;
         cursor: pointer;
-        transition: color 0.3s ease;
+        transition: color 0.3s ease, transform 0.3s ease;
       }
 
       .player-btn:hover {
         color: var(--hover-color);
+        transform: scale(1.2);
       }
 
       .progress-container {
@@ -174,6 +226,8 @@
         background-color: rgba(255, 255, 255, 0.1);
         cursor: pointer;
         margin: 0 20px;
+        border-radius: 2.5px;
+        overflow: hidden;
       }
 
       .progress-bar {
@@ -211,11 +265,12 @@
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        transition: background-color 0.3s ease;
+        transition: background-color 0.3s ease, transform 0.3s ease;
       }
 
       .drop-area.highlight {
         background-color: rgba(90, 185, 234, 0.1);
+        transform: scale(1.05);
       }
 
       .drop-area i {
@@ -238,10 +293,15 @@
         background-color: rgba(255, 255, 255, 0.1);
         color: var(--text-color);
         font-size: 16px;
+        transition: background-color 0.3s ease;
       }
 
       .search-container input::placeholder {
         color: rgba(255, 255, 255, 0.5);
+      }
+
+      .search-container input:focus {
+        background-color: rgba(255, 255, 255, 0.2);
       }
 
       .search-container button {
@@ -251,6 +311,144 @@
         font-size: 20px;
         cursor: pointer;
         margin-left: 10px;
+        transition: transform 0.3s ease;
+      }
+
+      .search-container button:hover {
+        transform: scale(1.1);
+      }
+
+      .volume-control {
+        display: flex;
+        align-items: center;
+        margin-left: 20px;
+      }
+
+      .volume-icon {
+        color: var(--text-color);
+        font-size: 18px;
+        margin-right: 10px;
+      }
+
+      .volume-slider {
+        -webkit-appearance: none;
+        width: 100px;
+        height: 5px;
+        border-radius: 2.5px;
+        background: rgba(255, 255, 255, 0.1);
+        outline: none;
+      }
+
+      .volume-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: var(--secondary-color);
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+      }
+
+      .volume-slider::-webkit-slider-thumb:hover {
+        background: var(--hover-color);
+        transform: scale(1.2);
+      }
+
+      .volume-slider::-moz-range-thumb {
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: var(--secondary-color);
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+      }
+
+      .volume-slider::-moz-range-thumb:hover {
+        background: var(--hover-color);
+        transform: scale(1.2);
+      }
+
+      #visualizer {
+        width: 100%;
+        height: 50px;
+        background-color: rgba(255, 255, 255, 0.05);
+        margin-top: 20px;
+        border-radius: 5px;
+      }
+
+      .playlists-container {
+        margin-top: 30px;
+      }
+
+      .playlist {
+        background-color: var(--card-bg-color);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+      }
+
+      .playlist:hover {
+        background-color: rgba(90, 185, 234, 0.3);
+        transform: translateY(-5px);
+      }
+
+      .playlist h3 {
+        margin-bottom: 10px;
+      }
+
+      .playlist-songs {
+        font-size: 0.9em;
+        opacity: 0.7;
+      }
+
+      /* Media Queries for Mobile */
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: 100%;
+          height: auto;
+          flex-direction: row;
+          justify-content: space-around;
+          padding: 10px;
+        }
+
+        .main-content {
+          padding: 20px;
+        }
+
+        .nav-item {
+          padding: 5px;
+          margin-bottom: 0;
+          margin-right: 5px;
+          flex-grow: 1;
+          justify-content: center;
+        }
+
+        .logo {
+          width: 50px;
+          margin-bottom: 0;
+        }
+
+        .player {
+          flex-direction: column;
+          height: auto;
+          padding: 10px;
+        }
+
+        .progress-container {
+          margin: 10px 0;
+        }
+
+        #nowPlaying {
+          text-align: center;
+          margin-top: 10px;
+        }
       }
     </style>
   </head>
@@ -262,9 +460,10 @@
           alt="Flow Logo"
           class="logo"
         />
-        <div class="nav-item">Inicio</div>
-        <div class="nav-item">Tu Biblioteca</div>
-        <div class="nav-item">Buscar</div>
+        <div class="nav-item"><i class="fas fa-home"></i> Inicio</div>
+        <div class="nav-item"><i class="fas fa-music"></i> Tu Biblioteca</div>
+        <div class="nav-item"><i class="fas fa-search"></i> Buscar</div>
+        <div class="nav-item"><i class="fas fa-list"></i> Playlists</div>
       </div>
       <div class="main-content">
         <h1 class="fade-in">Bienvenido a Flow</h1>
@@ -286,6 +485,18 @@
         </div>
         <h2 class="fade-in">Tu Biblioteca</h2>
         <ul id="songList" class="fade-in"></ul>
+        <canvas id="visualizer"></canvas>
+        <div class="playlists-container">
+          <h2>Tus Playlists</h2>
+          <div class="playlist">
+            <h3>Mi lista favorita</h3>
+            <p class="playlist-songs">10 canciones</p>
+          </div>
+          <div class="playlist">
+            <h3>Para trabajar</h3>
+            <p class="playlist-songs">15 canciones</p>
+          </div>
+        </div>
       </div>
     </div>
     <div class="player">
@@ -305,6 +516,18 @@
       </div>
       <audio id="audioPlayer"></audio>
       <p id="nowPlaying"></p>
+      <div class="volume-control">
+        <i class="fas fa-volume-up volume-icon"></i>
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.1"
+          value="1"
+          class="volume-slider"
+          id="volumeControl"
+        />
+      </div>
     </div>
     <script src="flow-local-music-player.js"></script>
   </body>
