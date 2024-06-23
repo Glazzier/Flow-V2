@@ -87,11 +87,9 @@ function highlightCurrentSong() {
   const songItems = document.querySelectorAll("#songList li");
   songItems.forEach((item, i) => {
     if (i === currentSongIndex) {
-      item.style.backgroundColor = "rgba(90, 185, 234, 0.3)";
-      item.style.fontWeight = "bold";
+      item.classList.add("playing");
     } else {
-      item.style.backgroundColor = "";
-      item.style.fontWeight = "normal";
+      item.classList.remove("playing");
     }
   });
 }
@@ -238,6 +236,20 @@ function searchSongs() {
   updateSongList(filteredSongs);
 }
 
+// Función para ajustar el volumen
+function adjustVolume() {
+  const volumeControl = document.getElementById("volumeControl");
+  const audioPlayer = document.getElementById("audioPlayer");
+  audioPlayer.volume = volumeControl.value;
+}
+
+// Función para cambiar la vista
+function changeView(viewName) {
+  const views = document.querySelectorAll(".view");
+  views.forEach((view) => (view.style.display = "none"));
+  document.getElementById(`${viewName}View`).style.display = "block";
+}
+
 // Inicializar la aplicación
 document.addEventListener("DOMContentLoaded", () => {
   updateSongList();
@@ -270,12 +282,16 @@ document.addEventListener("DOMContentLoaded", () => {
   audioPlayer.addEventListener("ended", playNextSong);
   audioPlayer.addEventListener("timeupdate", updateProgressBar);
 
-  // Efecto de desvanecimiento para los elementos principales
-  const fadeElements = document.querySelectorAll(".fade-in");
-  fadeElements.forEach((el, index) => {
-    el.style.opacity = "0";
-    setTimeout(() => {
-      el.style.opacity = "1";
-    }, 100 * index);
+  // Agregar event listener para el control de volumen
+  document
+    .getElementById("volumeControl")
+    .addEventListener("input", adjustVolume);
+
+  // Agregar event listeners para la navegación
+  document.querySelectorAll(".nav-item").forEach((item) => {
+    item.addEventListener("click", () => changeView(item.dataset.view));
   });
+
+  // Inicializar la vista de inicio
+  changeView("home");
 });
