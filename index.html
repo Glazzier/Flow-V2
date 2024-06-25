@@ -12,63 +12,76 @@
 
 <body>
   <div class="container">
-    <div class="sidebar">
+    <aside class="sidebar">
       <img
         src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNEE5MEUyO3N0b3Atb3BhY2l0eToxIiAvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiM1QUI5RUE7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0idXJsKCNncmFkaWVudCkiIC8+CiAgPHBhdGggZD0iTTMwIDUwIFEgNTAgMzAsIDcwIDUwIFQgMzAgNTAiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNiIgZmlsbD0ibm9uZSIgLz4KPC9zdmc+"
         alt="Flow Logo" class="logo" />
-      <div class="nav-item" data-view="home">
-        <i class="fas fa-home"></i> Inicio
-      </div>
-      <div class="nav-item" data-view="library">
-        <i class="fas fa-music"></i> Tu Biblioteca
-      </div>
-      <div class="nav-item" data-view="search">
-        <i class="fas fa-search"></i> Buscar
-      </div>
-    </div>
-    <div class="main-content">
-      <div id="homeView" class="view">
-        <h1 class="fade-in">Bienvenido a Flow</h1>
-        <p>Tu reproductor de música local. Explora tu biblioteca o busca tus canciones favoritas.</p>
-      </div>
-      <div id="libraryView" class="view" style="display: none;">
-        <h2 class="fade-in">Tu Biblioteca</h2>
-        <ul id="songList" class="fade-in"></ul>
-      </div>
-      <div id="searchView" class="view" style="display: none">
-        <h2 class="fade-in">Buscar</h2>
-        <div class="search-container fade-in">
-          <input type="text" id="searchInput" placeholder="Buscar en tu biblioteca..." />
-          <button id="searchButton">
-            <i class="fas fa-search"></i>
-          </button>
+      <nav>
+        <div class="nav-item" data-view="home">
+          <i class="fas fa-home"></i> Inicio
         </div>
-        <ul id="searchResults" class="fade-in"></ul>
+        <div class="nav-item" data-view="library">
+          <i class="fas fa-music"></i> Tu Biblioteca
+        </div>
+        <div class="nav-item" data-view="search">
+          <i class="fas fa-search"></i> Buscar
+        </div>
+      </nav>
+    </aside>
+    <main class="main-content">
+      <div id="homeView" class="view">
+        <h1>Bienvenido a Flow</h1>
+        <select id="genreFilter">
+          <option value="all">Todos los géneros</option>
+        </select>
+        <ul id="songList"></ul>
       </div>
-    </div>
+      <div id="libraryView" class="view" style="display:none;">
+        <h2>Tu Biblioteca</h2>
+        <ul id="libraryList"></ul>
+      </div>
+      <div id="searchView" class="view" style="display:none;">
+        <h2>Buscar</h2>
+        <div class="search-container">
+          <input type="text" id="searchInput" placeholder="Buscar canciones...">
+          <button id="searchButton"><i class="fas fa-search"></i></button>
+        </div>
+        <ul id="searchResults"></ul>
+      </div>
+    </main>
   </div>
   <div class="player">
-    <div class="player-controls">
-      <button id="prevBtn" class="player-btn">
-        <i class="fas fa-step-backward"></i>
-      </button>
-      <button id="playPauseBtn" class="player-btn">
-        <i class="fas fa-play"></i>
-      </button>
-      <button id="nextBtn" class="player-btn">
-        <i class="fas fa-step-forward"></i>
-      </button>
+    <div class="player-left">
+      <div class="player-cover" id="playerCover"></div>
+      <div class="player-info">
+        <span class="player-song-title" id="playerSongTitle"></span>
+        <span class="player-song-artist" id="playerSongArtist"></span>
+      </div>
     </div>
-    <div class="progress-container" id="progressContainer">
-      <div class="progress-bar" id="progressBar"></div>
+    <div class="player-center">
+      <div class="player-controls">
+        <button id="prevBtn" class="player-btn">
+          <i class="fas fa-step-backward"></i>
+        </button>
+        <button id="playPauseBtn" class="player-btn">
+          <i class="fas fa-play"></i>
+        </button>
+        <button id="nextBtn" class="player-btn">
+          <i class="fas fa-step-forward"></i>
+        </button>
+      </div>
+      <div class="progress-container" id="progressContainer">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
     </div>
-    <audio id="audioPlayer"></audio>
-    <p id="nowPlaying"></p>
-    <div class="volume-control">
-      <i class="fas fa-volume-up volume-icon"></i>
-      <input type="range" min="0" max="1" step="0.1" value="1" class="volume-slider" id="volumeControl" />
+    <div class="player-right">
+      <div class="volume-control">
+        <i class="fas fa-volume-up volume-icon"></i>
+        <input type="range" min="0" max="1" step="0.1" value="1" class="volume-slider" id="volumeControl" />
+      </div>
     </div>
   </div>
+  <audio id="audioPlayer"></audio>
   <script src="flow-scripts.js"></script>
 </body>
 

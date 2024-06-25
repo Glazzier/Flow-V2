@@ -1,19 +1,51 @@
 // Variables globales
 let currentSongIndex = 0;
 let isPlaying = false;
-let songsData = []; // Variable para almacenar las canciones cargadas
+let songsData = [];
+let libraryData = [];
+let currentSongList = [];
+const MAX_VOLUME = 0.35;
 
 // Función para cargar canciones desde el archivo JSON
 async function loadSongs() {
   try {
     const response = await fetch("songs.json");
     const data = await response.json();
-    songsData = data.songs; // Guardamos las canciones en la variable global songsData
+    songsData = data.songs;
+    currentSongList = songsData;
+    updateGenreFilter();
+    loadLibrary();
     return songsData;
   } catch (error) {
     console.error("Error fetching songs:", error);
     return [];
   }
+}
+
+// Función para cargar la biblioteca
+function loadLibrary() {
+  const storedLibrary = localStorage.getItem("flowLibrary");
+  if (storedLibrary) {
+    libraryData = JSON.parse(storedLibrary);
+    updateSongList(libraryData, "libraryList");
+  }
+}
+
+// Función para guardar la biblioteca
+function saveLibrary() {
+  localStorage.setItem("flowLibrary", JSON.stringify(libraryData));
+}
+
+// Función para actualizar el filtro de géneros
+function updateGenreFilter() {
+  const genreFilter = document.getElementById("genreFilter");
+  const genres = new Set(songsData.map((song) => song.genre));
+  genres.forEach((genre) => {
+    const option = document.createElement("option");
+    option.value = genre;
+    option.textContent = genre;
+    genreFilter.appendChild(option);
+  });
 }
 
 // Función para actualizar la lista de canciones en la interfaz
@@ -22,35 +54,7 @@ function updateSongList(songs, containerId = "songList") {
   songList.innerHTML = "";
 
   songs.forEach((song, index) => {
-    const li = document.createElement("li");
-    li.className = "song-item fade-in";
-    li.onclick = () => playSong(index);
-
-    const coverArt = document.createElement("div");
-    coverArt.className = "cover-art";
-    if (song.cover) {
-      coverArt.style.backgroundImage = `url(${song.cover})`;
-    } else {
-      coverArt.innerHTML = '<i class="fas fa-music"></i>';
-    }
-
-    const songInfo = document.createElement("div");
-    songInfo.className = "song-info";
-
-    const songTitle = document.createElement("span");
-    songTitle.textContent = song.title;
-    songTitle.className = "song-title";
-
-    const songArtist = document.createElement("span");
-    songArtist.textContent = song.artist;
-    songArtist.className = "song-artist";
-
-    songInfo.appendChild(songTitle);
-    songInfo.appendChild(songArtist);
-
-    li.appendChild(coverArt);
-    li.appendChild(songInfo);
-
+    const li = createSongListItem(song, index, containerId);
     songList.appendChild(li);
   });
 
@@ -60,38 +64,175 @@ function updateSongList(songs, containerId = "songList") {
     li.className = "no-results fade-in";
     songList.appendChild(li);
   }
+
+  if (containerId === "songList" || containerId === "searchResults") {
+    currentSongList = songs;
+  }
+}
+
+// Función para crear un elemento de lista de canción
+function createSongListItem(song, index, containerId) {
+  const li = document.createElement("li");
+  li.className = "song-item fade-in";
+  li.onclick = () => playSong(index, containerId);
+
+  const coverArt = document.createElement("div");
+  coverArt.className = "cover-art";
+  if (song.cover) {
+    coverArt.style.backgroundImage = `url(${song.cover})`;
+  } else {
+    coverArt.innerHTML = '<i class="fas fa-music"></i>';
+  }
+
+  const songInfo = document.createElement("div");
+  songInfo.className = "song-info";
+
+  const songTitle = document.createElement("span");
+  songTitle.textContent = song.title;
+  songTitle.className = "song-title";
+
+  const songArtist = document.createElement("span");
+  songArtist.textContent = song.artist;
+  songArtist.className = "song-artist";
+
+  const playingIndicator = document.createElement("div");
+  playingIndicator.className = "playing-indicator";
+  playingIndicator.textContent = "Reproduciendo";
+
+  const actionButton = document.createElement("button");
+  actionButton.className = "song-action-btn";
+
+  if (containerId === "libraryList") {
+    actionButton.innerHTML = '<i class="fas fa-trash"></i>';
+    actionButton.onclick = (e) => {
+      e.stopPropagation();
+      removeFromLibrary(song);
+    };
+  } else {
+    actionButton.innerHTML = '<i class="fas fa-plus"></i>';
+    actionButton.onclick = (e) => {
+      e.stopPropagation();
+      addToLibrary(song);
+    };
+  }
+
+  songInfo.appendChild(songTitle);
+  songInfo.appendChild(songArtist);
+
+  li.appendChild(coverArt);
+  li.appendChild(songInfo);
+  li.appendChild(playingIndicator);
+  li.appendChild(actionButton);
+
+  return li;
+}
+
+// Función para mostrar el menú contextual
+function showContextMenu(e, song, containerId) {
+  e.preventDefault();
+  const contextMenu = document.createElement("div");
+  contextMenu.className = "context-menu";
+
+  const addToLibraryItem = document.createElement("div");
+  addToLibraryItem.className = "context-menu-item";
+  addToLibraryItem.textContent = "Añadir a la biblioteca";
+  addToLibraryItem.onclick = () => addToLibrary(song);
+
+  contextMenu.appendChild(addToLibraryItem);
+  document.body.appendChild(contextMenu);
+
+  contextMenu.style.display = "block";
+  contextMenu.style.left = `${e.pageX}px`;
+  contextMenu.style.top = `${e.pageY}px`;
+
+  document.addEventListener("click", () => {
+    contextMenu.remove();
+  });
+}
+
+// Función para añadir una canción a la biblioteca
+function addToLibrary(song) {
+  if (
+    !libraryData.some(
+      (librarySong) =>
+        librarySong.title === song.title && librarySong.artist === song.artist
+    )
+  ) {
+    libraryData.push(song);
+    saveLibrary();
+    updateSongList(libraryData, "libraryList");
+    alert(`"${song.title}" ha sido añadida a tu biblioteca.`);
+  } else {
+    alert(`"${song.title}" ya está en tu biblioteca.`);
+  }
+}
+
+// Función para eliminar una canción de la biblioteca
+function removeFromLibrary(song) {
+  libraryData = libraryData.filter(
+    (librarySong) =>
+      !(librarySong.title === song.title && librarySong.artist === song.artist)
+  );
+  saveLibrary();
+  updateSongList(libraryData, "libraryList");
+  alert(`"${song.title}" ha sido eliminada de tu biblioteca.`);
 }
 
 // Función para reproducir una canción
-function playSong(index) {
-  if (index >= 0 && index < songsData.length) {
+function playSong(index, sourceId) {
+  let songList;
+  if (sourceId === "libraryList") {
+    songList = libraryData;
+  } else {
+    songList = currentSongList;
+  }
+
+  if (index >= 0 && index < songList.length) {
     currentSongIndex = index;
-    const song = songsData[index];
+    const song = songList[index];
     const audioPlayer = document.getElementById("audioPlayer");
     audioPlayer.src = song.link;
     audioPlayer.play().catch((error) => {
       console.error("Error playing audio:", error);
-      // Aquí puedes añadir código para mostrar un mensaje de error al usuario
     });
     isPlaying = true;
     updatePlayPauseButton();
-    document.getElementById(
-      "nowPlaying"
-    ).textContent = `Reproduciendo: ${song.title} - ${song.artist}`;
-    highlightCurrentSong();
+    updatePlayerInfo(song);
+    highlightCurrentSong(sourceId);
+  }
+}
+
+// Función para actualizar la información del reproductor
+function updatePlayerInfo(song) {
+  document.getElementById("playerSongTitle").textContent = song.title;
+  document.getElementById("playerSongArtist").textContent = song.artist;
+  const playerCover = document.getElementById("playerCover");
+  if (song.cover) {
+    playerCover.style.backgroundImage = `url(${song.cover})`;
+  } else {
+    playerCover.style.backgroundImage = "none";
+    playerCover.innerHTML = '<i class="fas fa-music"></i>';
   }
 }
 
 // Función para resaltar la canción actual
-function highlightCurrentSong() {
+function highlightCurrentSong(sourceId) {
   const songItems = document.querySelectorAll(
-    "#songList li, #searchResults li"
+    "#songList li, #searchResults li, #libraryList li"
   );
   songItems.forEach((item, i) => {
-    if (i === currentSongIndex) {
-      item.classList.add("playing");
+    if (sourceId === "libraryList") {
+      if (i === currentSongIndex && item.closest("#libraryList")) {
+        item.classList.add("playing");
+      } else {
+        item.classList.remove("playing");
+      }
     } else {
-      item.classList.remove("playing");
+      if (i === currentSongIndex && !item.closest("#libraryList")) {
+        item.classList.add("playing");
+      } else {
+        item.classList.remove("playing");
+      }
     }
   });
 }
@@ -112,7 +253,6 @@ function togglePlayPause() {
   } else {
     audioPlayer.play().catch((error) => {
       console.error("Error playing audio:", error);
-      // Aquí puedes añadir código para mostrar un mensaje de error al usuario
     });
   }
   isPlaying = !isPlaying;
@@ -121,18 +261,17 @@ function togglePlayPause() {
 
 // Función para reproducir la siguiente canción
 function playNextSong() {
-  const songs = songsData;
-  if (songs.length > 0) {
-    currentSongIndex = (currentSongIndex + 1) % songs.length;
+  if (currentSongList.length > 0) {
+    currentSongIndex = (currentSongIndex + 1) % currentSongList.length;
     playSong(currentSongIndex);
   }
 }
 
 // Función para reproducir la canción anterior
 function playPreviousSong() {
-  const songs = songsData;
-  if (songs.length > 0) {
-    currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+  if (currentSongList.length > 0) {
+    currentSongIndex =
+      (currentSongIndex - 1 + currentSongList.length) % currentSongList.length;
     playSong(currentSongIndex);
   }
 }
@@ -173,11 +312,12 @@ function searchSongs() {
   changeView("search");
 }
 
-// Función para ajustar el volumen
 function adjustVolume() {
   const volumeControl = document.getElementById("volumeControl");
   const audioPlayer = document.getElementById("audioPlayer");
-  audioPlayer.volume = volumeControl.value;
+  let newVolume = volumeControl.value * MAX_VOLUME; // Escalar el volumen
+
+  audioPlayer.volume = newVolume;
 
   // Actualizar el icono de volumen
   updateVolumeIcon(audioPlayer.volume);
@@ -195,18 +335,18 @@ function updateVolumeIcon(volume) {
   }
 }
 
-// Función para silenciar/activar el sonido
 function toggleMute() {
   const audioPlayer = document.getElementById("audioPlayer");
   const volumeControl = document.getElementById("volumeControl");
 
   if (audioPlayer.volume > 0) {
-    audioPlayer.dataset.lastVolume = audioPlayer.volume;
+    audioPlayer.dataset.lastVolume = audioPlayer.volume / MAX_VOLUME;
     audioPlayer.volume = 0;
     volumeControl.value = 0;
   } else {
-    audioPlayer.volume = audioPlayer.dataset.lastVolume || 1;
-    volumeControl.value = audioPlayer.volume;
+    const lastVolume = audioPlayer.dataset.lastVolume || 1;
+    audioPlayer.volume = lastVolume * MAX_VOLUME;
+    volumeControl.value = lastVolume;
   }
 
   updateVolumeIcon(audioPlayer.volume);
@@ -217,6 +357,11 @@ function changeView(viewName) {
   const views = document.querySelectorAll(".view");
   views.forEach((view) => (view.style.display = "none"));
   document.getElementById(`${viewName}View`).style.display = "block";
+
+  // Actualizar la lista de canciones si es la vista de biblioteca
+  if (viewName === "library") {
+    updateSongList(libraryData, "libraryList");
+  }
 }
 
 // Inicializar la aplicación
@@ -261,12 +406,38 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Inicializar el volumen
   const audioPlayer = document.getElementById("audioPlayer");
+  audioPlayer.volume = volumeControl.value * MAX_VOLUME;
+  updateVolumeIcon(audioPlayer.volume);
+
+  // Limitar el volumen inicial al máximo permitido
+  if (volumeControl.value > MAX_VOLUME) {
+    volumeControl.value = MAX_VOLUME;
+  }
   audioPlayer.volume = volumeControl.value;
   updateVolumeIcon(audioPlayer.volume);
 
   // Event listeners para la navegación
   document.querySelectorAll(".nav-item").forEach((item) => {
     item.addEventListener("click", () => changeView(item.dataset.view));
+  });
+
+  // Actualizar la información del reproductor cuando cambie la canción
+  audioPlayer.addEventListener("loadedmetadata", () => {
+    updatePlayerInfo(currentSongList[currentSongIndex]);
+  });
+
+  // Event listener para el filtro de géneros
+  document.getElementById("genreFilter").addEventListener("change", (e) => {
+    const selectedGenre = e.target.value;
+    const filteredSongs =
+      selectedGenre === "all"
+        ? songsData
+        : songsData.filter((song) => song.genre === selectedGenre);
+    updateSongList(filteredSongs);
+    currentSongIndex = 0;
+    if (filteredSongs.length > 0) {
+      updatePlayerInfo(filteredSongs[0]);
+    }
   });
 
   // Inicializar la vista de inicio
