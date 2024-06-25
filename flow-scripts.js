@@ -209,6 +209,7 @@ function updatePlayerInfo(song) {
   const playerCover = document.getElementById("playerCover");
   if (song.cover) {
     playerCover.style.backgroundImage = `url(${song.cover})`;
+    playerCover.innerHTML = "";
   } else {
     playerCover.style.backgroundImage = "none";
     playerCover.innerHTML = '<i class="fas fa-music"></i>';
@@ -217,24 +218,24 @@ function updatePlayerInfo(song) {
 
 // Función para resaltar la canción actual
 function highlightCurrentSong(sourceId) {
-  const songItems = document.querySelectorAll(
+  const allSongItems = document.querySelectorAll(
     "#songList li, #searchResults li, #libraryList li"
   );
-  songItems.forEach((item, i) => {
-    if (sourceId === "libraryList") {
-      if (i === currentSongIndex && item.closest("#libraryList")) {
-        item.classList.add("playing");
-      } else {
-        item.classList.remove("playing");
-      }
-    } else {
-      if (i === currentSongIndex && !item.closest("#libraryList")) {
-        item.classList.add("playing");
-      } else {
-        item.classList.remove("playing");
-      }
-    }
-  });
+  allSongItems.forEach((item) => item.classList.remove("playing"));
+
+  let currentList;
+  if (sourceId === "libraryList") {
+    currentList = document.getElementById("libraryList");
+  } else {
+    currentList = document.getElementById(
+      sourceId === "searchResults" ? "searchResults" : "songList"
+    );
+  }
+
+  const currentSongItem = currentList.children[currentSongIndex];
+  if (currentSongItem) {
+    currentSongItem.classList.add("playing");
+  }
 }
 
 // Función para actualizar el botón de reproducción/pausa
@@ -386,14 +387,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     .getElementById("audioPlayer")
     .addEventListener("timeupdate", updateProgressBar);
 
-  // Event listeners para la búsqueda
-  document
-    .getElementById("searchButton")
-    .addEventListener("click", searchSongs);
-  document.getElementById("searchInput").addEventListener("keyup", (event) => {
-    if (event.key === "Enter") {
-      searchSongs();
-    }
+  // Event listeners para la navegación
+  document.querySelectorAll(".nav-item").forEach((item) => {
+    item.addEventListener("click", () => {
+      changeView(item.dataset.view);
+      // Actualizar la lista actual cuando se cambia de vista
+      if (item.dataset.view === "library") {
+        currentSongList = libraryData;
+      } else if (item.dataset.view === "home") {
+        currentSongList = songsData;
+      }
+    });
   });
 
   // Event listener para el control de volumen

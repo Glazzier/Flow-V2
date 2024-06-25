@@ -46,7 +46,7 @@ body {
 }
 
 .logo:hover {
-  transform: scale(1.05);
+  transform: scale(1.1);
   filter: brightness(1.2);
 }
 
@@ -60,24 +60,46 @@ body {
   align-items: center;
   color: var(--text-secondary-color);
   font-weight: 500;
+  position: relative;
+  overflow: hidden;
 }
 
 .nav-item i {
   margin-right: 15px;
   font-size: 1.2em;
+  transition: var(--transition);
 }
 
 .nav-item:hover {
   background-color: rgba(255, 255, 255, 0.1);
   color: var(--text-color);
-  transform: translateX(5px);
+}
+
+.nav-item:hover i {
+  transform: scale(1.2);
+}
+
+.nav-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--primary-color);
+  transform: translateX(-100%);
+  transition: var(--transition);
+}
+
+.nav-item:hover::after {
+  transform: translateX(0);
 }
 
 .main-content {
   flex-grow: 1;
   padding: 40px;
   overflow-y: auto;
-  background: linear-gradient(to bottom, #1e1e1e, var(--background-color));
+  background: linear-gradient(135deg, #1e1e1e, var(--background-color));
 }
 
 h1, h2 {
@@ -85,6 +107,7 @@ h1, h2 {
   margin-bottom: 25px;
   font-weight: 700;
   letter-spacing: 0.5px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 #songList, #searchResults, #libraryList {
@@ -107,10 +130,26 @@ h1, h2 {
   text-align: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   position: relative;
+  overflow: hidden;
+}
+
+.song-item::before {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+  transition: var(--transition);
+}
+
+.song-item:hover::before {
+  top: -50%;
+  left: -50%;
 }
 
 .song-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
   transform: translateY(-5px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
@@ -131,7 +170,7 @@ h1, h2 {
 }
 
 .song-item:hover .cover-art {
-  transform: scale(1.05);
+  transform: scale(1.05) rotate(3deg);
 }
 
 .cover-art i {
@@ -174,10 +213,12 @@ h1, h2 {
   cursor: pointer;
   transition: var(--transition);
   opacity: 0;
+  transform: scale(0.8);
 }
 
 .song-item:hover .song-action-btn {
   opacity: 1;
+  transform: scale(1);
 }
 
 .song-action-btn:hover {
@@ -218,7 +259,7 @@ h1, h2 {
 }
 
 .player-cover:hover {
-  transform: scale(1.1);
+  transform: scale(1.1) rotate(3deg);
 }
 
 .player-info {
@@ -302,6 +343,7 @@ h1, h2 {
 
 .volume-icon:hover {
   color: var(--hover-color);
+  transform: scale(1.1);
 }
 
 .volume-slider {
@@ -382,6 +424,7 @@ h1, h2 {
 
 #searchButton:hover {
   background-color: var(--hover-color);
+  transform: scale(1.05);
 }
 
 .playing-indicator {
@@ -396,10 +439,12 @@ h1, h2 {
   font-weight: 600;
   opacity: 0;
   transition: var(--transition);
+  transform: translateY(-10px);
 }
 
 .song-item.playing .playing-indicator {
   opacity: 1;
+  transform: translateY(0);
 }
 
 .song-item.playing {
@@ -414,27 +459,34 @@ h1, h2 {
 @keyframes fadeIn {
   from {
     opacity: 0;
+    transform: translateY(10px);
   }
 
   to {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
 #genreFilter {
   margin-bottom: 20px;
-  padding: 10px;
+  padding: 10px 15px;
   border-radius: 20px;
   background-color: var(--card-bg-color);
   color: var(--text-color);
   border: none;
   font-size: 14px;
   transition: var(--transition);
+  cursor: pointer;
 }
 
 #genreFilter:focus {
   outline: none;
   box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+#genreFilter:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 @media (max-width: 768px) {
