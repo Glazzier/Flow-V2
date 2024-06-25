@@ -23,6 +23,9 @@
         <div class="nav-item" data-view="library">
           <i class="fas fa-music"></i> Tu Biblioteca
         </div>
+        <div class="nav-item" data-view="playlists">
+          <i class="fas fa-list"></i> Playlists
+        </div>
         <div class="nav-item" data-view="search">
           <i class="fas fa-search"></i> Buscar
         </div>
@@ -39,6 +42,11 @@
       <div id="libraryView" class="view" style="display:none;">
         <h2>Tu Biblioteca</h2>
         <ul id="libraryList"></ul>
+      </div>
+      <div id="playlistsView" class="view" style="display:none;">
+        <h2>Tus Playlists</h2>
+        <button id="createPlaylistBtn" class="btn">Crear Nueva Playlist</button>
+        <ul id="playlistList"></ul>
       </div>
       <div id="searchView" class="view" style="display:none;">
         <h2>Buscar</h2>

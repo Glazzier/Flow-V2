@@ -4,6 +4,8 @@ let isPlaying = false;
 let songsData = [];
 let libraryData = [];
 let currentSongList = [];
+let playlists = [];
+let currentPlaylistId = null;
 const MAX_VOLUME = 0.35;
 
 // Función para cargar canciones desde el archivo JSON
@@ -70,6 +72,140 @@ function updateSongList(songs, containerId = "songList") {
   }
 }
 
+// Función para cargar playlists desde el almacenamiento local
+function loadPlaylists() {
+  const storedPlaylists = localStorage.getItem("flowPlaylists");
+  if (storedPlaylists) {
+    playlists = JSON.parse(storedPlaylists);
+    updatePlaylistsList();
+  }
+}
+
+// Función para guardar playlists en el almacenamiento local
+function savePlaylists() {
+  localStorage.setItem("flowPlaylists", JSON.stringify(playlists));
+}
+
+// Función para crear una nueva playlist
+function createPlaylist(name) {
+  const newPlaylist = {
+    id: Date.now(),
+    name: name,
+    songs: [],
+  };
+  playlists.push(newPlaylist);
+  savePlaylists();
+  updatePlaylistsList();
+}
+
+// Función para actualizar la lista de playlists en la interfaz
+function updatePlaylistsList() {
+  const playlistList = document.getElementById("playlistList");
+  playlistList.innerHTML = "";
+
+  playlists.forEach((playlist) => {
+    const li = document.createElement("li");
+    li.className = "playlist-item";
+    li.innerHTML = `
+      <span>${playlist.name}</span>
+      <button class="delete-playlist-btn" onclick="deletePlaylist(${playlist.id})">
+        <i class="fas fa-trash"></i>
+      </button>
+    `;
+    li.onclick = () => showPlaylistSongs(playlist);
+    playlistList.appendChild(li);
+  });
+}
+
+// Función para eliminar una playlist
+function deletePlaylist(playlistId) {
+  playlists = playlists.filter((playlist) => playlist.id !== playlistId);
+  savePlaylists();
+  updatePlaylistsList();
+}
+
+// Función para mostrar las canciones de una playlist
+function showPlaylistSongs(playlist) {
+  currentPlaylistId = playlist.id;
+  const playlistView = document.getElementById("playlistView");
+  playlistView.innerHTML = `
+    <h2>${playlist.name}</h2>
+    <ul id="playlistSongsList"></ul>
+  `;
+
+  const playlistSongsList = document.getElementById("playlistSongsList");
+  playlist.songs.forEach((song, index) => {
+    const li = createSongListItem(song, index, "playlistSongsList");
+    playlistSongsList.appendChild(li);
+  });
+
+  changeView("playlist");
+}
+
+// Función para agregar una canción a una playlist
+function addSongToPlaylist(song, playlistId) {
+  const playlist = playlists.find((p) => p.id === playlistId);
+  if (playlist) {
+    // Verificar si la canción ya está en la playlist
+    const songExists = playlist.songs.some(
+      (s) => s.title === song.title && s.artist === song.artist
+    );
+    if (!songExists) {
+      playlist.songs.push(song);
+      savePlaylists();
+      alert(
+        `"${song.title}" ha sido añadida a la playlist "${playlist.name}".`
+      );
+    } else {
+      alert(`"${song.title}" ya está en la playlist "${playlist.name}".`);
+    }
+  }
+}
+
+// Función para mostrar el modal de agregar a playlist
+function showAddToPlaylistModal(song) {
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h3>Agregar a playlist</h3>
+      <ul id="playlistModalList"></ul>
+    </div>
+  `;
+
+  const playlistModalList = modal.querySelector("#playlistModalList");
+  playlists.forEach((playlist) => {
+    const li = document.createElement("li");
+    li.textContent = playlist.name;
+    li.onclick = () => {
+      addSongToPlaylist(song, playlist.id);
+      modal.remove();
+    };
+    playlistModalList.appendChild(li);
+  });
+
+  document.body.appendChild(modal);
+  modal.onclick = (e) => {
+    if (e.target === modal) {
+      modal.remove();
+    }
+  };
+}
+
+function removeFromPlaylist(song, playlistId) {
+  const playlist = playlists.find((p) => p.id === playlistId);
+  if (playlist) {
+    playlist.songs = playlist.songs.filter(
+      (s) => !(s.title === song.title && s.artist === song.artist)
+    );
+    savePlaylists();
+    showPlaylistSongs(playlist);
+    alert(
+      `"${song.title}" ha sido eliminada de la playlist "${playlist.name}".`
+    );
+  }
+}
+
 // Función para crear un elemento de lista de canción
 function createSongListItem(song, index, containerId) {
   const li = document.createElement("li");
@@ -108,6 +244,12 @@ function createSongListItem(song, index, containerId) {
       e.stopPropagation();
       removeFromLibrary(song);
     };
+  } else if (containerId === "playlistSongsList") {
+    actionButton.innerHTML = '<i class="fas fa-trash"></i>';
+    actionButton.onclick = (e) => {
+      e.stopPropagation();
+      removeFromPlaylist(song, currentPlaylistId);
+    };
   } else {
     actionButton.innerHTML = '<i class="fas fa-plus"></i>';
     actionButton.onclick = (e) => {
@@ -123,6 +265,17 @@ function createSongListItem(song, index, containerId) {
   li.appendChild(songInfo);
   li.appendChild(playingIndicator);
   li.appendChild(actionButton);
+
+  // Agregar botón para añadir a playlist
+  const addToPlaylistBtn = document.createElement("button");
+  addToPlaylistBtn.className = "add-to-playlist-btn";
+  addToPlaylistBtn.innerHTML = '<i class="fas fa-list"></i>';
+  addToPlaylistBtn.onclick = (e) => {
+    e.stopPropagation();
+    showAddToPlaylistModal(song);
+  };
+
+  li.appendChild(addToPlaylistBtn);
 
   return li;
 }
@@ -183,6 +336,9 @@ function playSong(index, sourceId) {
   let songList;
   if (sourceId === "libraryList") {
     songList = libraryData;
+  } else if (sourceId === "playlistSongsList") {
+    const currentPlaylist = playlists.find((p) => p.id === currentPlaylistId);
+    songList = currentPlaylist ? currentPlaylist.songs : [];
   } else {
     songList = currentSongList;
   }
@@ -441,6 +597,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     currentSongIndex = 0;
     if (filteredSongs.length > 0) {
       updatePlayerInfo(filteredSongs[0]);
+    }
+  });
+
+  // Event listener para el botón de búsqueda
+  document
+    .getElementById("searchButton")
+    .addEventListener("click", searchSongs);
+
+  // Event listener para la tecla Enter en el campo de búsqueda
+  document.getElementById("searchInput").addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      searchSongs();
+    }
+  });
+
+  // Evento para crear una nueva playlist
+  document.getElementById("createPlaylistBtn").addEventListener("click", () => {
+    const playlistName = prompt("Ingrese el nombre de la nueva playlist:");
+    if (playlistName) {
+      createPlaylist(playlistName);
     }
   });
 
