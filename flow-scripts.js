@@ -128,6 +128,26 @@ function deletePlaylist(playlistId) {
   updatePlaylistsList();
 }
 
+// Función para formatear el tiempo en minutos:segundos
+function formatTime(seconds) {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+}
+
+// Función para actualizar el tiempo de reproducción
+function updateTime() {
+  const audioPlayer = document.getElementById("audioPlayer");
+  const currentTimeElement = document.getElementById("currentTime");
+  const totalTimeElement = document.getElementById("totalTime");
+
+  currentTimeElement.textContent = formatTime(audioPlayer.currentTime);
+
+  if (!isNaN(audioPlayer.duration)) {
+    totalTimeElement.textContent = formatTime(audioPlayer.duration);
+  }
+}
+
 // Función para mostrar las canciones de una playlist
 function showPlaylistSongs(playlist) {
   currentPlaylistId = playlist.id;
@@ -372,6 +392,13 @@ function playSong(index, sourceId) {
     updatePlayPauseButton();
     updatePlayerInfo(song);
     highlightCurrentSong(sourceId);
+
+    // Actualizar el tiempo total cuando se carguen los metadatos
+    audioPlayer.onloadedmetadata = () => {
+      document.getElementById("totalTime").textContent = formatTime(
+        audioPlayer.duration
+      );
+    };
   }
 }
 
@@ -489,6 +516,7 @@ function updateProgressBar() {
   if (!isNaN(audioPlayer.duration)) {
     const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
     progressBar.style.width = `${progress}%`;
+    updateTime();
   }
 }
 
@@ -589,6 +617,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     .addEventListener("click", setPlaybackPosition);
 
   // Event listener para actualizar la barra de progreso
+  document
+    .getElementById("audioPlayer")
+    .addEventListener("timeupdate", updateProgressBar);
+
+  // Event listener para actualizar la barra de progreso y el tiempo
   document
     .getElementById("audioPlayer")
     .addEventListener("timeupdate", updateProgressBar);

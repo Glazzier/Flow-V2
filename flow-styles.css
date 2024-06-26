@@ -581,6 +581,10 @@ h1, h2 {
     width: 120px;
     height: 120px;
   }
+
+  .time-display {
+    margin-top: 10px;
+  }
 }
 
 /* Estilos para la vista de playlists */
@@ -777,4 +781,17 @@ h1, h2 {
 .playlist-song-duration {
   color: var(--text-secondary-color);
   font-size: 0.9em;
+}
+
+.time-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5px;
+  font-size: 12px;
+  color: var(--text-secondary-color);
+}
+
+.time-display span {
+  margin: 0 2px;
 }
