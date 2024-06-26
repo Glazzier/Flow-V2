@@ -533,40 +533,49 @@ h1, h2 {
     height: auto;
     flex-direction: row;
     justify-content: space-around;
-    padding: 15px;
+    padding: 10px;
   }
 
   .main-content {
-    padding: 20px;
+    padding: 15px;
   }
 
   .nav-item {
-    padding: 10px;
+    padding: 8px;
     margin-bottom: 0;
-    margin-right: 10px;
+    margin-right: 5px;
     flex-grow: 1;
     justify-content: center;
+    font-size: 0.9em;
+  }
+
+  .nav-item i {
+    margin-right: 5px;
   }
 
   .logo {
-    width: 80px;
+    width: 60px;
     margin-bottom: 0;
   }
 
   .player {
     flex-direction: column;
     height: auto;
-    padding: 15px;
+    padding: 10px;
   }
 
   .player-left, .player-center, .player-right {
     width: 100%;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
   }
 
   .player-cover {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .player-info {
+    font-size: 0.9em;
   }
 
   .volume-control {
@@ -574,16 +583,211 @@ h1, h2 {
   }
 
   #songList, #searchResults, #libraryList {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 15px;
+  }
+
+  .song-item {
+    padding: 15px;
   }
 
   .cover-art {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
+    margin-bottom: 15px;
+  }
+
+  .song-title {
+    font-size: 0.9em;
+  }
+
+  .song-artist {
+    font-size: 0.8em;
   }
 
   .time-display {
-    margin-top: 10px;
+    margin-top: 5px;
+    font-size: 0.8em;
+  }
+
+  .player-btn {
+    font-size: 20px;
+    margin: 0 10px;
+  }
+
+  #searchInput, #searchButton {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  #genreFilter {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  h1, h2 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    height: calc(100vh - 180px);
+  }
+
+  .sidebar {
+    height: 60px;
+    padding: 5px 10px;
+  }
+
+  .nav-item {
+    padding: 8px;
+    font-size: 0.75em;
+  }
+
+  .nav-item i {
+    margin-right: 3px;
+    font-size: 1em;
+  }
+
+  .logo {
+    width: 40px;
+    margin-right: 10px;
+  }
+
+  .main-content {
+    padding: 10px;
+  }
+
+  #songList, #searchResults, #libraryList {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+  }
+
+  .song-item {
+    padding: 10px;
+  }
+
+  .cover-art {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 8px;
+  }
+
+  .song-title {
+    font-size: 0.85em;
+    margin-bottom: 4px;
+  }
+
+  .song-artist {
+    font-size: 0.75em;
+  }
+
+  .player {
+    height: auto;
+    min-height: 120px;
+    padding: 10px;
+  }
+
+  .player-left, .player-center, .player-right {
+    width: 100%;
+    margin-bottom: 8px;
+    order: 2;
+  }
+
+  .player-cover {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+  }
+
+  .player-info {
+    font-size: 0.85em;
+  }
+
+  .player-song-title {
+    font-size: 0.9em;
+  }
+
+  .player-song-artist {
+    font-size: 0.8em;
+  }
+
+  .player-controls {
+    margin-bottom: 8px;
+  }
+
+  .player-btn {
+    font-size: 16px;
+    margin: 0 10px;
+  }
+
+  .progress-container {
+    margin-bottom: 5px;
+  }
+
+  .time-display {
+    font-size: 10px;
+    margin-top: 3px;
+  }
+
+  .volume-control {
+    justify-content: flex-start;
+  }
+
+  .volume-icon {
+    font-size: 16px;
+    margin-right: 8px;
+  }
+
+  .volume-slider {
+    width: 80px;
+  }
+
+  #searchInput, #searchButton {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  #genreFilter {
+    font-size: 12px;
+    padding: 8px 12px;
+    margin-bottom: 15px;
+  }
+
+  h1, h2 {
+    font-size: 1.2em;
+    margin-bottom: 12px;
+  }
+
+  #createPlaylistBtn {
+    font-size: 12px;
+    padding: 8px 15px;
+  }
+
+  .playlist-item {
+    padding: 10px;
+  }
+
+  .playlist-song-item {
+    padding: 8px;
+  }
+
+  .playlist-song-info {
+    margin-left: 10px;
+  }
+
+  .playlist-song-title {
+    font-size: 0.85em;
+  }
+
+  .playlist-song-artist {
+    font-size: 0.75em;
+  }
+
+  .playlist-song-duration {
+    font-size: 0.75em;
   }
 }
 
