@@ -107,7 +107,11 @@ function updatePlaylistsList() {
     const li = document.createElement("li");
     li.className = "playlist-item";
     li.innerHTML = `
-      <span>${playlist.name}</span>
+      <div class="playlist-info">
+        <i class="fas fa-list playlist-icon"></i>
+        <span class="playlist-name">${playlist.name}</span>
+        <span class="playlist-song-count">${playlist.songs.length} canciones</span>
+      </div>
       <button class="delete-playlist-btn" onclick="deletePlaylist(${playlist.id})">
         <i class="fas fa-trash"></i>
       </button>
@@ -130,12 +134,22 @@ function showPlaylistSongs(playlist) {
   const playlistView = document.getElementById("playlistView");
   playlistView.innerHTML = `
     <h2>${playlist.name}</h2>
+    <p>${playlist.songs.length} canciones</p>
     <ul id="playlistSongsList"></ul>
   `;
 
   const playlistSongsList = document.getElementById("playlistSongsList");
   playlist.songs.forEach((song, index) => {
-    const li = createSongListItem(song, index, "playlistSongsList");
+    const li = document.createElement("li");
+    li.className = "playlist-song-item";
+    li.innerHTML = `
+      <div class="playlist-song-info">
+        <div class="playlist-song-title">${song.title}</div>
+        <div class="playlist-song-artist">${song.artist}</div>
+      </div>
+      <div class="playlist-song-duration">${song.duration || "00:00"}</div>
+    `;
+    li.onclick = () => playSong(index, "playlistSongsList");
     playlistSongsList.appendChild(li);
   });
 
@@ -153,6 +167,8 @@ function addSongToPlaylist(song, playlistId) {
     if (!songExists) {
       playlist.songs.push(song);
       savePlaylists();
+      updatePlaylistsList(); // Actualizar la lista de playlists
+      showPlaylistSongs(playlist); // Mostrar las canciones actualizadas de la playlist
       alert(
         `"${song.title}" ha sido añadida a la playlist "${playlist.name}".`
       );
@@ -211,6 +227,7 @@ function createSongListItem(song, index, containerId) {
   const li = document.createElement("li");
   li.className = "song-item fade-in";
   li.onclick = () => playSong(index, containerId);
+  li.oncontextmenu = (e) => showContextMenu(e, song);
 
   const coverArt = document.createElement("div");
   coverArt.className = "cover-art";
@@ -356,6 +373,38 @@ function playSong(index, sourceId) {
     updatePlayerInfo(song);
     highlightCurrentSong(sourceId);
   }
+}
+
+// Función para mostrar el menú contextual
+function showContextMenu(e, song) {
+  e.preventDefault();
+  const contextMenu = document.createElement("div");
+  contextMenu.className = "context-menu";
+  contextMenu.innerHTML = `
+    <div class="context-menu-item" data-action="addToLibrary">Añadir a la biblioteca</div>
+    <div class="context-menu-item" data-action="addToPlaylist">Añadir a playlist</div>
+  `;
+
+  document.body.appendChild(contextMenu);
+
+  contextMenu.style.top = `${e.pageY}px`;
+  contextMenu.style.left = `${e.pageX}px`;
+
+  setTimeout(() => contextMenu.classList.add("active"), 10);
+
+  contextMenu.addEventListener("click", (event) => {
+    const action = event.target.dataset.action;
+    if (action === "addToLibrary") {
+      addToLibrary(song);
+    } else if (action === "addToPlaylist") {
+      showAddToPlaylistModal(song);
+    }
+    contextMenu.remove();
+  });
+
+  document.addEventListener("click", () => contextMenu.remove(), {
+    once: true,
+  });
 }
 
 // Función para actualizar la información del reproductor
@@ -525,6 +574,7 @@ function changeView(viewName) {
 document.addEventListener("DOMContentLoaded", async () => {
   const songs = await loadSongs();
   updateSongList(songs);
+  loadPlaylists();
 
   // Event listeners para los controles de reproducción
   document
