@@ -160,20 +160,19 @@ function showPlaylistSongs(playlist) {
 
   const playlistSongsList = document.getElementById("playlistSongsList");
   playlist.songs.forEach((song, index) => {
-    const li = document.createElement("li");
-    li.className = "playlist-song-item";
-    li.innerHTML = `
-      <div class="playlist-song-info">
-        <div class="playlist-song-title">${song.title}</div>
-        <div class="playlist-song-artist">${song.artist}</div>
-      </div>
-      <div class="playlist-song-duration">${song.duration || "00:00"}</div>
-    `;
-    li.onclick = () => playSong(index, "playlistSongsList");
+    const li = createSongListItem(song, index, "playlistSongsList");
     playlistSongsList.appendChild(li);
   });
 
   changeView("playlist");
+}
+
+function playFromPlaylist(index) {
+  const currentPlaylist = playlists.find((p) => p.id === currentPlaylistId);
+  if (currentPlaylist) {
+    currentSongList = currentPlaylist.songs;
+    playSong(index, "playlistSongsList");
+  }
 }
 
 // Función para agregar una canción a una playlist
@@ -247,7 +246,7 @@ function createSongListItem(song, index, containerId) {
   const li = document.createElement("li");
   li.className = "song-item fade-in";
   li.onclick = () => playSong(index, containerId);
-  li.oncontextmenu = (e) => showContextMenu(e, song);
+  li.oncontextmenu = (e) => showContextMenu(e, song, containerId);
 
   const coverArt = document.createElement("div");
   coverArt.className = "cover-art";
@@ -323,20 +322,39 @@ function showContextMenu(e, song, containerId) {
   const contextMenu = document.createElement("div");
   contextMenu.className = "context-menu";
 
-  const addToLibraryItem = document.createElement("div");
-  addToLibraryItem.className = "context-menu-item";
-  addToLibraryItem.textContent = "Añadir a la biblioteca";
-  addToLibraryItem.onclick = () => addToLibrary(song);
+  if (containerId === "libraryList") {
+    contextMenu.innerHTML = `
+      <div class="context-menu-item" data-action="removeFromLibrary">Quitar de la biblioteca</div>
+      <div class="context-menu-item" data-action="addToPlaylist">Añadir a playlist</div>
+    `;
+  } else {
+    contextMenu.innerHTML = `
+      <div class="context-menu-item" data-action="addToLibrary">Añadir a la biblioteca</div>
+      <div class="context-menu-item" data-action="addToPlaylist">Añadir a playlist</div>
+    `;
+  }
 
-  contextMenu.appendChild(addToLibraryItem);
   document.body.appendChild(contextMenu);
 
-  contextMenu.style.display = "block";
-  contextMenu.style.left = `${e.pageX}px`;
   contextMenu.style.top = `${e.pageY}px`;
+  contextMenu.style.left = `${e.pageX}px`;
 
-  document.addEventListener("click", () => {
+  setTimeout(() => contextMenu.classList.add("active"), 10);
+
+  contextMenu.addEventListener("click", (event) => {
+    const action = event.target.dataset.action;
+    if (action === "addToLibrary") {
+      addToLibrary(song);
+    } else if (action === "removeFromLibrary") {
+      removeFromLibrary(song);
+    } else if (action === "addToPlaylist") {
+      showAddToPlaylistModal(song);
+    }
     contextMenu.remove();
+  });
+
+  document.addEventListener("click", () => contextMenu.remove(), {
+    once: true,
   });
 }
 
