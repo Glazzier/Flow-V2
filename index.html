@@ -11,6 +11,11 @@
 </head>
 
 <body>
+  <div id="notification" class="notification" style="display: none;">
+    <p>¡La colaboración con Nulled saldrá en algún momento de julio!</p>
+    <img src="moveit_flow.png" alt="Move It - 1000+ canciones disponibles" style="max-width: 100%; height: auto;">
+    <button id="closeNotification">Cerrar</button>
+  </div>
   <div class="container">
     <aside class="sidebar">
       <img
@@ -28,6 +33,9 @@
         </div>
         <div class="nav-item" data-view="search">
           <i class="fas fa-search"></i> Buscar
+        </div>
+        <div class="nav-item" data-view="settings">
+          <i class="fas fa-cog"></i> Ajustes
         </div>
       </nav>
     </aside>
@@ -55,6 +63,10 @@
           <button id="searchButton"><i class="fas fa-search"></i></button>
         </div>
         <ul id="searchResults"></ul>
+      </div>
+      <div id="settingsView" class="view" style="display:none;">
+        <h2>Ajustes</h2>
+        <p class="settings-message">Los ajustes están temporalmente deshabilitados. ¡Pronto vendrán cosas nuevas!</p>
       </div>
     </main>
   </div>
