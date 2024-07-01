@@ -64,9 +64,21 @@
         </div>
         <ul id="searchResults"></ul>
       </div>
-      <div id="settingsView" class="view" style="display:none;">
-        <h2>Ajustes</h2>
-        <p class="settings-message">Los ajustes están temporalmente deshabilitados. ¡Pronto vendrán cosas nuevas!</p>
+      <div id="settingsView" class="view">
+        <h2 class="settings-title">Ajustes</h2>
+        <div class="settings-section">
+          <div class="setting-item">
+            <div>
+              <label for="autoplayToggle" class="setting-label">Reproducción automática</label>
+              <p class="setting-description">Reproduce automáticamente la siguiente canción</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="autoplayToggle">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <p class="settings-message">Más ajustes estarán disponibles próximamente.</p>
       </div>
     </main>
   </div>

@@ -24,6 +24,18 @@ async function loadSongs() {
   }
 }
 
+// Función para guardar la configuración de autoplay
+function saveAutoplaySettings() {
+  const autoplayEnabled = document.getElementById("autoplayToggle").checked;
+  localStorage.setItem("autoplayEnabled", autoplayEnabled);
+}
+
+// Función para cargar la configuración de autoplay
+function loadAutoplaySettings() {
+  const autoplayEnabled = localStorage.getItem("autoplayEnabled") === "true";
+  document.getElementById("autoplayToggle").checked = autoplayEnabled;
+}
+
 // Función para cargar la biblioteca
 function loadLibrary() {
   const storedLibrary = localStorage.getItem("flowLibrary");
@@ -417,6 +429,14 @@ function playSong(index, sourceId) {
         audioPlayer.duration
       );
     };
+
+    // Agregar lógica de autoplay
+    audioPlayer.onended = () => {
+      const autoplayEnabled = document.getElementById("autoplayToggle").checked;
+      if (autoplayEnabled) {
+        playNextSong();
+      }
+    };
   }
 }
 
@@ -622,6 +642,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   updateSongList(songs);
   loadPlaylists();
 
+  // Cargar la configuración de autoplay
+  loadAutoplaySettings();
+
   // Event listeners para los controles de reproducción
   document
     .getElementById("playPauseBtn")
@@ -720,6 +743,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       createPlaylist(playlistName);
     }
   });
+
+  // Agregar event listener para guardar la configuración de autoplay
+  document
+    .getElementById("autoplayToggle")
+    .addEventListener("change", saveAutoplaySettings);
 
   // Inicializar la vista de inicio
   changeView("home");
