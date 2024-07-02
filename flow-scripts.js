@@ -323,6 +323,14 @@ function createSongListItem(song, index, containerId) {
     showAddToPlaylistModal(song);
   };
 
+  const downloadButton = document.createElement("button");
+  downloadButton.className = "download-btn";
+  downloadButton.innerHTML = '<i class="fas fa-download"></i>';
+  downloadButton.onclick = (e) => {
+    e.stopPropagation();
+    downloadSong(song);
+  };
+
   li.appendChild(addToPlaylistBtn);
 
   return li;
@@ -448,6 +456,7 @@ function showContextMenu(e, song) {
   contextMenu.innerHTML = `
     <div class="context-menu-item" data-action="addToLibrary">Añadir a la biblioteca</div>
     <div class="context-menu-item" data-action="addToPlaylist">Añadir a playlist</div>
+    <div class="context-menu-item" data-action="downloadSong">Descargar canción</div>
   `;
 
   document.body.appendChild(contextMenu);
@@ -463,6 +472,8 @@ function showContextMenu(e, song) {
       addToLibrary(song);
     } else if (action === "addToPlaylist") {
       showAddToPlaylistModal(song);
+    } else if (action === "downloadSong") {
+      downloadSong(song);
     }
     contextMenu.remove();
   });
@@ -752,3 +763,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Inicializar la vista de inicio
   changeView("home");
 });
+
+function downloadSong(song) {
+  // Crear un enlace temporal
+  const link = document.createElement("a");
+  link.href = song.link;
+  link.download = `${song.title} - ${song.artist}.mp3`;
+
+  // Añadir el enlace al documento y simular un clic
+  document.body.appendChild(link);
+  link.click();
+
+  // Eliminar el enlace del documento
+  document.body.removeChild(link);
+}
