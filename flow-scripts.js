@@ -17,10 +17,19 @@ async function loadSongs() {
     currentSongList = songsData;
     updateGenreFilter();
     loadLibrary();
+    updateTotalSongsCount();
     return songsData;
   } catch (error) {
     console.error("Error fetching songs:", error);
     return [];
+  }
+}
+
+// Función para actualizar el contador de canciones
+function updateTotalSongsCount() {
+  const totalSongsElement = document.getElementById("totalSongsCount");
+  if (totalSongsElement) {
+    totalSongsElement.textContent = songsData.length;
   }
 }
 
