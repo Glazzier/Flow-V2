@@ -1,11 +1,12 @@
 :root {
   --primary-color: #1db954;
-  --secondary-color: #1ed760;
-  --background-color: #121212;
-  --surface-color: #181818;
+  --secondary-color: #191414;
+  --background: #121212;
+  --surface: #282828;
   --text-color: #ffffff;
+  --text-primary: #ffffff;
   --text-secondary-color: #b3b3b3;
-  --hover-color: #1ed760;
+  --hover: #1ed760;
   --card-bg-color: #282828;
   --gradient-primary: linear-gradient(135deg, #1db954, #1ed760);
   --gradient-background: linear-gradient(135deg, #121212, #1e1e1e);
@@ -22,9 +23,9 @@
 }
 
 body {
-  font-family: "Poppins", sans-serif;
-  background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
-  color: var(--text-color);
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--background);
+  color: var(--text-primary);
   line-height: 1.6;
 }
 
@@ -35,7 +36,7 @@ body {
 
 .sidebar {
   width: 240px;
-  background: rgba(24, 24, 24, 0.8);
+  background-color: var(--secondary-color);
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -59,11 +60,11 @@ body {
 }
 
 .nav-item {
-  padding: 12px 15px;
-  margin-bottom: 15px;
-  border-radius: 8px;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
   cursor: pointer;
-  transition: var(--transition);
+  transition: background-color 0.3s;
   display: flex;
   align-items: center;
   color: var(--text-secondary-color);
@@ -74,14 +75,14 @@ body {
 }
 
 .nav-item i {
-  margin-right: 15px;
+  margin-right: 10px;
   font-size: 1.2em;
   transition: var(--transition);
 }
 
 .nav-item:hover {
   transform: translateX(5px);
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), transparent);
+  background-color: var(--surface);
 }
 
 .nav-item:hover i {
@@ -124,7 +125,7 @@ body {
 
 .main-content {
   flex-grow: 1;
-  padding: 40px;
+  padding: 30px;
   overflow-y: auto;
   background: radial-gradient(
     circle at top right,
@@ -195,7 +196,7 @@ body {
 h1,
 h2 {
   color: var(--text-color);
-  margin-bottom: 25px;
+  margin-bottom: 20px;
   font-weight: 700;
   letter-spacing: 0.5px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
@@ -220,10 +221,10 @@ h2 {
 
 .song-item {
   cursor: pointer;
-  padding: 20px;
+  padding: 10px;
   background: linear-gradient(145deg, #2a2a2a, #242424);
   border-radius: 12px;
-  transition: var(--transition-slow);
+  transition: background-color 0.3s;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -263,11 +264,12 @@ h2 {
   width: 160px;
   height: 160px;
   border-radius: 8px;
-  background-color: var(--surface-color);
+  background-color: var(--secondary-color);
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 20px;
+  margin-right: 0px;
   background-size: cover;
   background-position: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -364,8 +366,8 @@ h2 {
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(24, 24, 24, 0.8);
-  padding: 15px 25px;
+  background-color: var(--surface);
+  padding: 0 20px;
   display: flex;
   backdrop-filter: blur(10px);
   align-items: center;
@@ -381,6 +383,7 @@ h2 {
 .player-right {
   display: flex;
   align-items: center;
+  flex: 1;
 }
 
 .player-right {
@@ -409,6 +412,7 @@ h2 {
   margin-right: 15px;
   background-size: cover;
   background-position: center;
+  background-color: var(--secondary-color);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: var(--transition);
 }
@@ -450,18 +454,20 @@ h2 {
 .player-controls {
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .player-btn {
-  background: var(--gradient-primary);
-  color: var(--text-color);
+  background: none;
+  color: var(--text-primary);
   border: none;
   border-radius: 50%;
   width: 40px;
   height: 40px;
+  font-size: 24px;
   position: relative;
   overflow: hidden;
+  margin: 0 15px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -495,7 +501,7 @@ h2 {
 .progress-container {
   width: 100%;
   height: 4px;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: var(--secondary-color);
   cursor: pointer;
   border-radius: 2px;
   overflow: hidden;
@@ -504,11 +510,7 @@ h2 {
 
 .progress-bar {
   height: 100%;
-  background: linear-gradient(
-    to right,
-    var(--primary-color),
-    var(--secondary-color)
-  );
+  background-color: var(--primary-color);
   width: 0;
   transition: width 0.3s ease;
   animation: glow 2s infinite;
@@ -518,6 +520,7 @@ h2 {
   display: flex;
   align-items: center;
   width: 150px;
+  justify-content: flex-end;
 }
 
 .volume-icon {
@@ -944,6 +947,10 @@ h2 {
   margin: 0 2px;
 }
 
+#songList, #libraryList, #searchResults {
+  list-style-type: none;
+}
+
 /* Media queries */
 @media (max-width: 768px) {
   .container {
@@ -1081,12 +1088,30 @@ h2 {
   .toggle-switch {
     margin-top: 10px;
   }
+
+  .github-button {
+    top: 1px;
+    right: 11px;
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+}
+
+input[type="text"], select, button {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+}
+
+input[type="text"], select {
+  background-color: var(--surface);
+  color: var(--text-primary);
 }
 
 @media (max-width: 480px) {
   .container {
     height: calc(100vh - 170px);
-    /* Aumentamos ligeramente el espacio */
   }
 
   .sidebar {
@@ -1291,6 +1316,24 @@ h2 {
   .setting-description {
     font-size: 0.8em;
   }
+
+  .github-button {
+    top: 10px;
+    right: 10px;
+    font-size: 12px;
+    padding: 9px 10px;
+  }
+}
+
+button {
+  background-color: var(--primary-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: var(--hover);
 }
 
 /* Estilos para la vista de ajustes */
@@ -1577,4 +1620,128 @@ input:checked + .toggle-slider:before {
   margin-right: 8px;
   font-size: 0.9em;
   color: var(--text-secondary-color);
+}
+
+.github-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #24292e;
+  color: #ffffff;
+  padding: 10px 15px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  z-index: 1000;
+}
+
+.github-button:hover {
+  background-color: #2c974b;
+  transform: translateY(-3px);
+}
+
+.github-button i {
+  margin-right: 8px;
+}
+
+/* Animaciones generales */
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Animaciones para elementos de la interfaz */
+.nav-item, .song-item, .player-btn, .volume-slider {
+  transition: all 0.3s ease;
+}
+
+.nav-item:hover, .song-item:hover, .player-btn:hover {
+  transform: translateY(-2px);
+}
+
+.logo {
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Animación para el progreso de la canción */
+.progress-bar {
+  transition: width 0.1s linear;
+}
+
+/* Animación para cambios de vista */
+.view {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Animación para botones */
+.btn, #createPlaylistBtn, #searchButton {
+  transition: all 0.3s ease;
+}
+
+.btn:hover, #createPlaylistBtn:hover, #searchButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Animación para la barra de volumen */
+.volume-slider {
+  transition: opacity 0.3s ease;
+}
+
+.volume-slider:hover {
+  opacity: 1;
+}
+
+/* Animación para el cambio de canciones */
+.player-info {
+  transition: all 0.3s ease;
+}
+
+.player-info:hover {
+  transform: translateY(-2px);
+}
+
+/* Animación para el hover en las canciones */
+.song-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.song-item:hover::before {
+  opacity: 1;
+}
+
+/* Animación para el botón de reproducción */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+#playPauseBtn:active {
+  animation: pulse 0.3s ease-in-out;
 }
