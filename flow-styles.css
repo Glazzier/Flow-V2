@@ -14,6 +14,8 @@
   --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
   --transition-slow: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --glass-effect: rgba(255, 255, 255, 0.1);
+  --glass-blur: 5px;
 }
 
 * {
@@ -23,7 +25,7 @@
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   background-color: var(--background);
   color: var(--text-primary);
   line-height: 1.6;
@@ -222,17 +224,22 @@ h2 {
 .song-item {
   cursor: pointer;
   padding: 10px;
-  background: linear-gradient(145deg, #2a2a2a, #242424);
+  background: linear-gradient(
+    145deg,
+    var(--glass-effect),
+    rgba(36, 36, 36, 0.7)
+  );
   border-radius: 12px;
-  transition: background-color 0.3s;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-radius: 12px;
   text-align: center;
   box-shadow: var(--shadow);
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
 .song-item::before {
@@ -258,6 +265,9 @@ h2 {
 .song-item:hover {
   transform: translateY(-10px) scale(1.03);
   box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(0);
+  -webkit-backdrop-filter: blur(0);
+  background: linear-gradient(145deg, #2a2a2a, #242424);
 }
 
 .cover-art {
@@ -947,7 +957,9 @@ h2 {
   margin: 0 2px;
 }
 
-#songList, #libraryList, #searchResults {
+#songList,
+#libraryList,
+#searchResults {
   list-style-type: none;
 }
 
@@ -1097,14 +1109,17 @@ h2 {
   }
 }
 
-input[type="text"], select, button {
+input[type="text"],
+select,
+button {
   padding: 10px;
   margin-bottom: 10px;
   border: none;
   border-radius: 5px;
 }
 
-input[type="text"], select {
+input[type="text"],
+select {
   background-color: var(--surface);
   color: var(--text-primary);
 }
@@ -1654,16 +1669,27 @@ input:checked + .toggle-slider:before {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Animaciones para elementos de la interfaz */
-.nav-item, .song-item, .player-btn, .volume-slider {
+.nav-item,
+.song-item,
+.player-btn,
+.volume-slider {
   transition: all 0.3s ease;
 }
 
-.nav-item:hover, .song-item:hover, .player-btn:hover {
+.nav-item:hover,
+.song-item:hover,
+.player-btn:hover {
   transform: translateY(-2px);
 }
 
@@ -1686,16 +1712,26 @@ input:checked + .toggle-slider:before {
 }
 
 @keyframes slideIn {
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* Animación para botones */
-.btn, #createPlaylistBtn, #searchButton {
+.btn,
+#createPlaylistBtn,
+#searchButton {
   transition: all 0.3s ease;
 }
 
-.btn:hover, #createPlaylistBtn:hover, #searchButton:hover {
+.btn:hover,
+#createPlaylistBtn:hover,
+#searchButton:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -1720,7 +1756,7 @@ input:checked + .toggle-slider:before {
 
 /* Animación para el hover en las canciones */
 .song-item::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -1737,9 +1773,15 @@ input:checked + .toggle-slider:before {
 
 /* Animación para el botón de reproducción */
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 #playPauseBtn:active {
