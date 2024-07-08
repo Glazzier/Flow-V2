@@ -506,6 +506,66 @@ function updatePlayerInfo(song) {
   }
 }
 
+// Función para actualizar la información del reproductor
+function updatePlayerInfo(song) {
+  document.getElementById("playerSongTitle").textContent = song.title;
+  document.getElementById("playerSongArtist").textContent = song.artist;
+  const playerCover = document.getElementById("playerCover");
+
+  // Actualizar la portada en el reproductor
+  if (song.cover) {
+    playerCover.style.backgroundImage = `url(${song.cover})`;
+    playerCover.innerHTML = "";
+
+    // Actualizar el favicon con la portada de la canción
+    updateFavicon(song.cover);
+  } else {
+    playerCover.style.backgroundImage = "none";
+    playerCover.innerHTML = '<i class="fas fa-music"></i>';
+
+    // Restaurar el favicon original
+    resetFavicon();
+  }
+
+  // Actualizar el título de la página
+  document.title = `${song.title} - ${song.artist} | Flow`;
+}
+
+// Función para actualizar el favicon
+function updateFavicon(coverUrl) {
+  const faviconLink =
+    document.querySelector("link[rel*='icon']") ||
+    document.createElement("link");
+  faviconLink.type = "image/x-icon";
+  faviconLink.rel = "shortcut icon";
+
+  // Crear un canvas para dibujar la imagen
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = 32; 
+  canvas.height = 32;
+
+  const img = new Image();
+  img.crossOrigin = "anonymous"; // Necesario para cargar imágenes de otros dominios
+  img.onload = function () {
+    // Dibujar la imagen en el canvas
+    ctx.drawImage(img, 0, 0, 32, 32);
+
+    // Convertir el canvas a una URL de datos y establecerla como el href del favicon
+    faviconLink.href = canvas.toDataURL("image/png");
+    document.head.appendChild(faviconLink);
+  };
+  img.src = coverUrl;
+}
+
+// Función para restaurar el favicon original
+function resetFavicon() {
+  const faviconLink = document.querySelector("link[rel*='icon']");
+  if (faviconLink) {
+    faviconLink.href = "favicon.ico"; 
+  }
+}
+
 // Función para resaltar la canción actual
 function highlightCurrentSong(sourceId) {
   const allSongItems = document.querySelectorAll(
