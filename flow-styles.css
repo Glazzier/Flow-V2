@@ -5,7 +5,7 @@
   --surface: #282828;
   --text-color: #ffffff;
   --text-primary: #ffffff;
-  --text-secondary-color: #b3b3b3;
+  --text-secondary-color: #d1d1d1;
   --hover: #1ed760;
   --card-bg-color: #282828;
   --gradient-primary: linear-gradient(135deg, #1db954, #1ed760);
@@ -48,6 +48,12 @@ body {
   border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.sidebar,
+.player {
+  backdrop-filter: blur(10px);
+  background-color: rgba(25, 20, 20, 0.8);
+}
+
 .logo {
   width: 120px;
   margin-bottom: 40px;
@@ -65,8 +71,9 @@ body {
   padding: 10px 15px;
   margin-bottom: 10px;
   border-radius: 5px;
+  border-left: 3px solid transparent;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   color: var(--text-secondary-color);
@@ -101,6 +108,12 @@ body {
   background: var(--gradient-primary);
   transform: scaleX(0);
   transition: var(--transition);
+}
+
+.nav-item:hover,
+.nav-item.active {
+  border-left-color: var(--primary-color);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .nav-item:hover::after {
@@ -230,11 +243,12 @@ h2 {
     rgba(36, 36, 36, 0.7)
   );
   border-radius: 12px;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  border: 1px solid transparent;
   box-shadow: var(--shadow);
   position: relative;
   overflow: hidden;
@@ -263,11 +277,25 @@ h2 {
 }
 
 .song-item:hover {
-  transform: translateY(-10px) scale(1.03);
-  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border-color: var(--primary-color);
   backdrop-filter: blur(0);
   -webkit-backdrop-filter: blur(0);
   background: linear-gradient(145deg, #2a2a2a, #242424);
+}
+
+.btn,
+#createPlaylistBtn,
+#searchButton {
+  transition: all 0.3s ease;
+}
+
+.btn:hover,
+#createPlaylistBtn:hover,
+#searchButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .cover-art {
@@ -488,6 +516,7 @@ h2 {
 .player-btn:hover {
   transform: scale(1.1);
   box-shadow: 0 0 15px rgba(29, 185, 84, 0.5);
+  color: var(--hover);
 }
 
 .player-btn::after {
@@ -519,9 +548,10 @@ h2 {
 }
 
 .progress-bar {
-  height: 100%;
+  height: 5px;
   background-color: var(--primary-color);
   width: 0;
+  border-radius: 2.5px;
   transition: width 0.3s ease;
   animation: glow 2s infinite;
 }
@@ -549,8 +579,8 @@ h2 {
 .volume-slider {
   -webkit-appearance: none;
   width: 100px;
-  height: 4px;
-  border-radius: 2px;
+  height: 5px;
+  border-radius: 2.5px;
   background: linear-gradient(
     to right,
     var(--primary-color),
@@ -563,6 +593,15 @@ h2 {
 
 .volume-slider:hover {
   opacity: 1;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  width: 15px;
+  height: 15px;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 .volume-slider::-webkit-slider-thumb,
@@ -763,59 +802,167 @@ h2 {
 }
 
 /* Estilos para la vista de playlists */
-#playlistsView {
-  padding: 20px;
-}
-
-#createPlaylistBtn {
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
+.playlist-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  margin-bottom: 15px;
+  background: linear-gradient(145deg, #2a2a2a, #242424);
+  border-radius: 10px;
+  transition: all 0.3s ease;
   cursor: pointer;
-  transition: var(--transition);
-  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-#createPlaylistBtn:hover {
-  background-color: var(--hover-color);
+.playlist-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(145deg, #2d2d2d, #272727);
 }
 
-#playlistList {
+.playlist-cover {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  margin-right: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.playlist-item:hover .playlist-cover {
+  transform: scale(1.05) rotate(2deg);
+}
+
+.playlist-info {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.playlist-name {
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-bottom: 5px;
+  color: var(--text-color);
+  transition: color 0.3s ease;
+}
+
+.playlist-item:hover .playlist-name {
+  color: var(--primary-color);
+}
+
+.playlist-song-count {
+  font-size: 0.9em;
+  color: var(--text-secondary-color);
+}
+
+.playlist-icon {
+  margin-left: auto;
+  font-size: 1.5em;
+  color: var(--primary-color);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.playlist-item:hover .playlist-icon {
+  opacity: 1;
+  transform: translateX(-10px);
+}
+
+/* Estilos para la vista de canciones de una playlist */
+#playlistView {
+  padding: 30px;
+  background: linear-gradient(145deg, #1e1e1e, #242424);
+  border-radius: 15px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+#playlistSongsList {
   list-style-type: none;
   padding: 0;
 }
 
-.playlist-item {
+.playlist-song-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  margin-bottom: 10px;
+  background: linear-gradient(145deg, #282828, #2a2a2a);
+}
+
+.playlist-song-item:hover {
+  transform: translateX(5px);
+  background: linear-gradient(145deg, #2a2a2a, #2d2d2d);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.playlist-song-info {
+  flex-grow: 1;
+  margin-left: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.playlist-song-title {
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 3px;
+  transition: color 0.3s ease;
+}
+
+.playlist-song-item:hover .playlist-song-title {
+  color: var(--primary-color);
+}
+
+.playlist-song-artist,
+.playlist-song-duration {
+  font-size: 0.9em;
+  color: var(--text-secondary-color);
+}
+
+.playlist-song-cover {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+  object-fit: cover;
+  transition: all 0.3s ease;
+}
+
+.playlist-song-item:hover .playlist-song-cover {
+  transform: scale(1.1) rotate(3deg);
+}
+
+.playlist-controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
-  background: linear-gradient(145deg, #2a2a2a, #242424);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: var(--transition);
+  margin-top: 20px;
 }
 
-.playlist-item:hover {
-  background: linear-gradient(145deg, #3a3a3a, #343434);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.delete-playlist-btn {
-  background: none;
+.playlist-control-btn {
+  background: var(--gradient-primary);
+  color: var(--text-color);
   border: none;
-  color: var(--text-secondary-color);
+  padding: 10px 20px;
+  border-radius: 25px;
   cursor: pointer;
-  transition: var(--transition);
+  transition: all 0.3s ease;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.delete-playlist-btn:hover {
-  color: var(--primary-color);
+.playlist-control-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(
+    to right,
+    var(--primary-color),
+    var(--hover-color)
+  );
 }
 
 /* Estilos para el modal */
@@ -834,8 +981,9 @@ h2 {
 
 .modal-content {
   background-color: var(--surface-color);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 15px;
   max-width: 80%;
   max-height: 80%;
   overflow-y: auto;
@@ -854,6 +1002,7 @@ h2 {
 
 #playlistModalList li:hover {
   background-color: rgba(255, 255, 255, 0.1);
+  color: var(--hover);
 }
 
 /* Estilos para la vista de canciones de una playlist */

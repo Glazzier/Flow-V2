@@ -95,28 +95,20 @@ function updateSongList(songs, containerId = "songList") {
 
 // Función para cargar playlists desde el almacenamiento local
 function loadPlaylists() {
-  const storedPlaylists = localStorage.getItem("flowPlaylists");
-  if (storedPlaylists) {
-    playlists = JSON.parse(storedPlaylists);
-    updatePlaylistsList();
-  }
+  playlists = [
+    {
+      id: 1,
+      name: "Música Electrónica",
+      cover: "Playlist-img/electronicaplaylist.webp",
+      songs: [],
+    },
+  ];
+  updatePlaylistsList();
 }
 
 // Función para guardar playlists en el almacenamiento local
 function savePlaylists() {
   localStorage.setItem("flowPlaylists", JSON.stringify(playlists));
-}
-
-// Función para crear una nueva playlist
-function createPlaylist(name) {
-  const newPlaylist = {
-    id: Date.now(),
-    name: name,
-    songs: [],
-  };
-  playlists.push(newPlaylist);
-  savePlaylists();
-  updatePlaylistsList();
 }
 
 // Función para actualizar la lista de playlists en la interfaz
@@ -129,13 +121,10 @@ function updatePlaylistsList() {
     li.className = "playlist-item";
     li.innerHTML = `
       <div class="playlist-info">
-        <i class="fas fa-list playlist-icon"></i>
+        <img src="${playlist.cover}" alt="${playlist.name}" class="playlist-cover">
         <span class="playlist-name">${playlist.name}</span>
         <span class="playlist-song-count">${playlist.songs.length} canciones</span>
       </div>
-      <button class="delete-playlist-btn" onclick="deletePlaylist(${playlist.id})">
-        <i class="fas fa-trash"></i>
-      </button>
     `;
     li.onclick = () => showPlaylistSongs(playlist);
     playlistList.appendChild(li);
@@ -200,15 +189,13 @@ function playFromPlaylist(index) {
 function addSongToPlaylist(song, playlistId) {
   const playlist = playlists.find((p) => p.id === playlistId);
   if (playlist) {
-    // Verificar si la canción ya está en la playlist
     const songExists = playlist.songs.some(
       (s) => s.title === song.title && s.artist === song.artist
     );
     if (!songExists) {
       playlist.songs.push(song);
-      savePlaylists();
-      updatePlaylistsList(); // Actualizar la lista de playlists
-      showPlaylistSongs(playlist); // Mostrar las canciones actualizadas de la playlist
+      updatePlaylistsList();
+      showPlaylistSongs(playlist);
       alert(
         `"${song.title}" ha sido añadida a la playlist "${playlist.name}".`
       );
@@ -542,7 +529,7 @@ function updateFavicon(coverUrl) {
   // Crear un canvas para dibujar la imagen
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
-  canvas.width = 32; 
+  canvas.width = 32;
   canvas.height = 32;
 
   const img = new Image();
@@ -562,7 +549,7 @@ function updateFavicon(coverUrl) {
 function resetFavicon() {
   const faviconLink = document.querySelector("link[rel*='icon']");
   if (faviconLink) {
-    faviconLink.href = "favicon.ico"; 
+    faviconLink.href = "favicon.ico";
   }
 }
 
@@ -813,14 +800,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("searchInput").addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
       searchSongs();
-    }
-  });
-
-  // Evento para crear una nueva playlist
-  document.getElementById("createPlaylistBtn").addEventListener("click", () => {
-    const playlistName = prompt("Ingrese el nombre de la nueva playlist:");
-    if (playlistName) {
-      createPlaylist(playlistName);
     }
   });
 
