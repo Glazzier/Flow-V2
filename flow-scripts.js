@@ -271,6 +271,14 @@ function createSongListItem(song, index, containerId) {
   songTitle.textContent = song.title;
   songTitle.className = "song-title";
 
+  // Agregar etiqueta de IA si es necesario
+  if (song.ai) {
+    const aiTag = document.createElement("span");
+    aiTag.textContent = "IA";
+    aiTag.className = "ai-tag";
+    songTitle.appendChild(aiTag);
+  }
+
   const songArtist = document.createElement("span");
   songArtist.textContent = song.artist;
   songArtist.className = "song-artist";

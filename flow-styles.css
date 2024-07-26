@@ -340,6 +340,8 @@ h2 {
 .song-title {
   font-weight: 600;
   margin-bottom: 8px;
+  display: flex;
+  align-items: center;
   color: var(--text-color);
   font-size: 1.1em;
   transition: var(--transition);
@@ -1242,9 +1244,11 @@ html {
   }
 
   .setting-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }  
 
   .toggle-switch {
     margin-top: 10px;
@@ -1255,6 +1259,11 @@ html {
     right: 11px;
     font-size: 12px;
     padding: 8px 12px;
+  }
+
+  .ai-tag {
+    font-size: 0.6em;
+    padding: 2px 4px;
   }
 }
 
@@ -1935,4 +1944,25 @@ input:checked + .toggle-slider:before {
 
 #playPauseBtn:active {
   animation: pulse 0.3s ease-in-out;
+}
+
+.ai-tag {
+  display: inline-block;
+  background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+  color: white;
+  padding: 3px 6px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: 8px;
+  vertical-align: middle;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.ai-tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
