@@ -7,6 +7,14 @@
       "cover": "https://cdn2.suno.ai/image_75f21524-4cc0-46a8-a85c-30db524af9eb.jpeg?width=360",
       "genre": "Dubstep",
       "ai": true
+    },
+    {
+      "title": "Freefall",
+      "artist": "Falcon",
+      "link": "https://dl.dropboxusercontent.com/scl/fi/61sl5ds1av7ltek0mypoa/freefall.mp3?rlkey=zd4v2dcimro5xm10sj1j7qw9w&dl=0",
+      "cover": "https://cdn2.suno.ai/9b3a0739-ebad-4a3b-97eb-40dabf4186b5_5d97716c.jpeg",
+      "genre": "cold",
+      "ai": true
     }
   ]
 }
